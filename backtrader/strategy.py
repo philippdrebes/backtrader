@@ -405,7 +405,8 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
 
         # prepare the indicators/observers data headers
         for iocsv in self.indobscsv:
-            headers.append(iocsv.__class__.__name__)
+            name = iocsv.plotinfo.plotname or iocsv.__class__.__name__
+            headers.append(name)
             headers.append('len')
             headers.extend(iocsv.getlinealiases())
 
@@ -415,7 +416,8 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
         values = list()
 
         for iocsv in self.indobscsv:
-            values.append(iocsv.__class__.__name__)
+            name = iocsv.plotinfo.plotname or iocsv.__class__.__name__
+            values.append(name)
             lio = len(iocsv)
             values.append(lio)
             if lio:
@@ -902,7 +904,7 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
         if isinstance(data, string_types):
             data = self.getdatabyname(data)
 
-        data = data or self.datas[0]
+        data = data if data is not None else self.datas[0]
         size = size if size is not None else self.getsizing(data, isbuy=True)
 
         if size:
@@ -932,7 +934,7 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
         if isinstance(data, string_types):
             data = self.getdatabyname(data)
 
-        data = data or self.datas[0]
+        data = data if data is not None else self.datas[0]
         size = size if size is not None else self.getsizing(data, isbuy=False)
 
         if size:
@@ -1359,7 +1361,7 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
 
         A property ``position`` is also available
         '''
-        data = data or self.datas[0]
+        data = data if data is not None else self.datas[0]
         broker = broker or self.broker
         return broker.getposition(data)
 
@@ -1441,7 +1443,7 @@ class Strategy(with_metaclass(MetaStrategy, StrategyBase)):
         Return the stake calculated by the sizer instance for the current
         situation
         '''
-        data = data or self.datas[0]
+        data = data if data is not None else self.datas[0]
         return self._sizer.getsizing(data, isbuy=isbuy)
 
 
